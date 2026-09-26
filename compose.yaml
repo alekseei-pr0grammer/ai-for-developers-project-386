@@ -1,0 +1,57 @@
+# Full stack locally, same images as production:  docker compose up --build
+# Open http://localhost:8080
+services:
+  db:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_USER: calendar
+      POSTGRES_PASSWORD: calendar
+      POSTGRES_DB: calendar
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U calendar -d calendar"]
+      interval: 2s
+      timeout: 3s
+      retries: 20
+
+  # One-off job: apply DB migrations, then exit. The API starts only after it succeeds.
+  migrate:
+    build: ./backend
+    image: calendar-api
+    command: ["alembic", "upgrade", "head"]
+    environment:
+      DATABASE_URL: postgresql+psycopg://calendar:calendar@db:5432/calendar
+    depends_on:
+      db:
+        condition: service_healthy
+
+  api:
+    build: ./backend
+    image: calendar-api
+    environment:
+      DATABASE_URL: postgresql+psycopg://calendar:calendar@db:5432/calendar
+    ports:
+      - "8000:8000"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  web:
+    build: ./frontend
+    image: calendar-web
+    ports:
+      - "8080:8080"
+    depends_on:
+      api:
+        condition: service_healthy
+
+volumes:
+  db-data:
