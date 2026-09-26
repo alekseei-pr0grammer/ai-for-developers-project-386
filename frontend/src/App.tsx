@@ -1,24 +1,36 @@
 import { useQuery } from '@tanstack/react-query'
 import { getReadinessOptions } from '@/api/generated/@tanstack/react-query.gen'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 
 function App() {
   // Typed end-to-end: `data` has the shape of FastAPI's ReadinessResponse.
   const readiness = useQuery(getReadinessOptions())
 
   return (
-    <main className="mx-auto flex min-h-svh max-w-md flex-col justify-center gap-4 p-6">
-      <h1 className="text-2xl font-semibold">Calendar</h1>
-      <p>
-        API status:{' '}
-        {readiness.isPending ? 'checking…' : readiness.isError ? 'unavailable' : readiness.data.database}
-      </p>
-      <button
-        type="button"
-        className="rounded-md border px-4 py-2"
-        onClick={() => readiness.refetch()}
-      >
-        Check again
-      </button>
+    <main className="mx-auto flex min-h-svh max-w-md flex-col justify-center p-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Calendar</CardTitle>
+          <CardDescription>Frontend → FastAPI → Postgres</CardDescription>
+        </CardHeader>
+        <CardContent className="flex items-center gap-2">
+          API status:
+          {readiness.isPending ? (
+            <Badge variant="secondary">checking…</Badge>
+          ) : readiness.isError ? (
+            <Badge variant="destructive">unavailable</Badge>
+          ) : (
+            <Badge>database {readiness.data.database}</Badge>
+          )}
+        </CardContent>
+        <CardFooter>
+          <Button variant="outline" onClick={() => readiness.refetch()} disabled={readiness.isFetching}>
+            Check again
+          </Button>
+        </CardFooter>
+      </Card>
     </main>
   )
 }
