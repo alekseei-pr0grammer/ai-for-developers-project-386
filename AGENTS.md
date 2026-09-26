@@ -26,7 +26,8 @@ FastAPI  →  Postgres
   - `openapi.json`: API contract snapshot exported from the backend
 - `compose.yaml`: full stack locally (db → migrate → api → web)
 - `.github/workflows/hexlet-check.yml`: Hexlet's workflow. **Never edit, rename or delete it.**
-- `.github/workflows/ci.yml`: our CI
+- `.github/workflows/ci.yml`: our CI, runs on every push to any branch
+- `.github/workflows/release-please.yml`: on push to `main`, opens or updates the release PR
 
 ## Commands (run from repo root, `make help` lists all)
 - `make install`: install deps
@@ -45,4 +46,6 @@ FastAPI  →  Postgres
 - **Config:** use env vars via `app/config.py`. No secrets in code. `VITE_*` vars are public and baked in at build time.
 - **Tests:** every new endpoint gets a pytest test in `backend/tests/`.
 - **Dependencies:** add with `uv add` / `npm install`. Commit the lock files.
+- **CI:** besides `make lint` and `make test`, it checks that `make api-client` output is committed and that `docker compose up --wait` starts healthy, so run those too when you touch the API or Docker files. A red CI run means a real problem: fix the cause, never skip or weaken a check. Debug with `gh run list` and `gh run view <id> --log-failed`. When adding a check, add it to both the `Makefile` and `ci.yml`.
+- **Releases:** release-please owns versions and `CHANGELOG.md`. Never bump a version or edit the changelog by hand. The version lives in `.release-please-manifest.json` and is copied to every file listed under `extra-files` in `release-please-config.json`; if you add a new place that holds the app version, add it there. `feat` → minor, `fix` → patch (while < 1.0).
 - **Commits:** use [Conventional Commits](https://www.conventionalcommits.org/): `type(scope): summary`, e.g. `feat(api): add bookings endpoint`, `fix(web): ...`. Types: `feat`, `fix`, `docs`, `refactor`, `test`, `ci`, `build`, `chore`. Scopes: `api`, `web`, `db`, `docker`.

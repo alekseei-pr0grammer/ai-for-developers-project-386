@@ -1,0 +1,23 @@
+# On every push to main, release-please reads Conventional Commits since the
+# last release and opens/updates a "release PR" (version bump + CHANGELOG.md).
+# Merging that PR creates the git tag and the GitHub Release.
+# Config: release-please-config.json, current version: .release-please-manifest.json
+name: release-please
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: googleapis/release-please-action@v5
+        with:
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
