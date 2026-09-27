@@ -6,4 +6,7 @@ import type { CreateClientConfig } from './generated/client.gen'
 export const createClientConfig: CreateClientConfig = (config) => ({
   ...config,
   baseUrl: import.meta.env.VITE_API_BASE_URL ?? '',
+  // Send the Host's session cookie, also when the API is on another origin
+  // (that origin must then be listed in the backend's CORS_ORIGINS).
+  credentials: 'include',
 })

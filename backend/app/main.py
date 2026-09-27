@@ -21,6 +21,8 @@ if settings.cors_origins:
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.cors_origins,
+        # The Host's session is a cookie, which cross-origin requests only carry with this.
+        allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
     )
