@@ -629,6 +629,136 @@
           }
         }
       }
+    },
+    "/api/hosts/{handle}/event-types/{event_type_id}": {
+      "get": {
+        "tags": [
+          "hosts"
+        ],
+        "summary": "Get Public Event Type",
+        "description": "An Event Type a Guest can book, with its Host's Public name.",
+        "operationId": "get_public_event_type",
+        "parameters": [
+          {
+            "name": "handle",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Handle"
+            }
+          },
+          {
+            "name": "event_type_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Event Type Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicEventTypeDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No such Host or bookable Event Type"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/hosts/{handle}/event-types/{event_type_id}/slots": {
+      "get": {
+        "tags": [
+          "hosts"
+        ],
+        "summary": "List Slots",
+        "description": "Free Slot start times (UTC) in [from, to), clipped to the booking window.",
+        "operationId": "list_slots",
+        "parameters": [
+          {
+            "name": "handle",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Handle"
+            }
+          },
+          {
+            "name": "event_type_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Event Type Id"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "title": "From"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "title": "To"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Slots"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No such Host or bookable Event Type"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -883,6 +1013,39 @@
         ],
         "title": "PublicEventType"
       },
+      "PublicEventTypeDetail": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "duration_minutes": {
+            "type": "integer",
+            "title": "Duration Minutes"
+          },
+          "host_public_name": {
+            "type": "string",
+            "title": "Host Public Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "description",
+          "duration_minutes",
+          "host_public_name"
+        ],
+        "title": "PublicEventTypeDetail"
+      },
       "PublicHost": {
         "properties": {
           "public_name": {
@@ -990,6 +1153,23 @@
           "time_zone"
         ],
         "title": "SignUpRequest"
+      },
+      "Slots": {
+        "properties": {
+          "slots": {
+            "items": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "type": "array",
+            "title": "Slots"
+          }
+        },
+        "type": "object",
+        "required": [
+          "slots"
+        ],
+        "title": "Slots"
       },
       "ValidationError": {
         "properties": {

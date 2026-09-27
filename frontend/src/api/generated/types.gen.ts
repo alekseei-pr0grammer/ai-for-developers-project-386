@@ -163,6 +163,32 @@ export type PublicEventType = {
 };
 
 /**
+ * PublicEventTypeDetail
+ */
+export type PublicEventTypeDetail = {
+    /**
+     * Id
+     */
+    id: number;
+    /**
+     * Title
+     */
+    title: string;
+    /**
+     * Description
+     */
+    description: string;
+    /**
+     * Duration Minutes
+     */
+    duration_minutes: number;
+    /**
+     * Host Public Name
+     */
+    host_public_name: string;
+};
+
+/**
  * PublicHost
  */
 export type PublicHost = {
@@ -236,6 +262,16 @@ export type SignUpRequest = {
      * Time Zone
      */
     time_zone: string;
+};
+
+/**
+ * Slots
+ */
+export type Slots = {
+    /**
+     * Slots
+     */
+    slots: Array<string>;
 };
 
 /**
@@ -617,3 +653,88 @@ export type GetPublicHostResponses = {
 };
 
 export type GetPublicHostResponse = GetPublicHostResponses[keyof GetPublicHostResponses];
+
+export type GetPublicEventTypeData = {
+    body?: never;
+    path: {
+        /**
+         * Handle
+         */
+        handle: string;
+        /**
+         * Event Type Id
+         */
+        event_type_id: number;
+    };
+    query?: never;
+    url: '/api/hosts/{handle}/event-types/{event_type_id}';
+};
+
+export type GetPublicEventTypeErrors = {
+    /**
+     * No such Host or bookable Event Type
+     */
+    404: unknown;
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetPublicEventTypeError = GetPublicEventTypeErrors[keyof GetPublicEventTypeErrors];
+
+export type GetPublicEventTypeResponses = {
+    /**
+     * Successful Response
+     */
+    200: PublicEventTypeDetail;
+};
+
+export type GetPublicEventTypeResponse = GetPublicEventTypeResponses[keyof GetPublicEventTypeResponses];
+
+export type ListSlotsData = {
+    body?: never;
+    path: {
+        /**
+         * Handle
+         */
+        handle: string;
+        /**
+         * Event Type Id
+         */
+        event_type_id: number;
+    };
+    query: {
+        /**
+         * From
+         */
+        from: string;
+        /**
+         * To
+         */
+        to: string;
+    };
+    url: '/api/hosts/{handle}/event-types/{event_type_id}/slots';
+};
+
+export type ListSlotsErrors = {
+    /**
+     * No such Host or bookable Event Type
+     */
+    404: unknown;
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ListSlotsError = ListSlotsErrors[keyof ListSlotsErrors];
+
+export type ListSlotsResponses = {
+    /**
+     * Successful Response
+     */
+    200: Slots;
+};
+
+export type ListSlotsResponse = ListSlotsResponses[keyof ListSlotsResponses];

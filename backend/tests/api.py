@@ -25,3 +25,21 @@ def create_event_type(client: TestClient, **overrides: Any) -> dict[str, Any]:
     response = client.post("/api/me/event-types", json=payload)
     assert response.status_code == 201, response.text
     return response.json()
+
+
+def set_schedule(client: TestClient, *intervals: tuple[int, str, str]) -> None:
+    """Replace the logged-in Host's Weekly Schedule: set_schedule(client, (0, "09:00", "12:00"))."""
+    body = {"intervals": [{"weekday": w, "start": s, "end": e} for w, s, e in intervals]}
+    response = client.put("/api/me/schedule", json=body)
+    assert response.status_code == 200, response.text
+
+
+def get_slots(
+    client: TestClient, event_type_id: int, start: str, end: str, handle: str = "alex-alekseev"
+) -> list[str]:
+    response = client.get(
+        f"/api/hosts/{handle}/event-types/{event_type_id}/slots",
+        params={"from": start, "to": end},
+    )
+    assert response.status_code == 200, response.text
+    return response.json()["slots"]

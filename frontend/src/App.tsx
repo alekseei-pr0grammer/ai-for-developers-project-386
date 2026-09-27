@@ -1,6 +1,7 @@
 import { createBrowserRouter, RouterProvider } from 'react-router'
 import { Layout } from '@/components/layout'
 import { RequireHost } from '@/components/require-host'
+import { BookingPage } from '@/pages/booking-page'
 import { DashboardPage } from '@/pages/dashboard-page'
 import { LandingPage } from '@/pages/landing-page'
 import { LogInPage } from '@/pages/log-in-page'
@@ -20,6 +21,7 @@ const router = createBrowserRouter([
         children: [{ path: '/dashboard', element: <DashboardPage /> }],
       },
       { path: '/:handle', element: <PublicHostPage /> },
+      { path: '/:handle/:eventTypeId', element: <BookingPage /> },
       { path: '*', element: <NotFoundPage /> },
     ],
   },

@@ -3,8 +3,8 @@
 import { type DefaultError, queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { createEventType, getHealth, getMe, getMySchedule, getPublicHost, getReadiness, listMyEventTypes, logIn, logOut, type Options, replaceMySchedule, signUp, updateEventType, updateMe } from '../sdk.gen';
-import type { CreateEventTypeData, CreateEventTypeError, CreateEventTypeResponse, GetHealthData, GetHealthResponse, GetMeData, GetMeError, GetMeResponse, GetMyScheduleData, GetMyScheduleError, GetMyScheduleResponse, GetPublicHostData, GetPublicHostError, GetPublicHostResponse, GetReadinessData, GetReadinessResponse, ListMyEventTypesData, ListMyEventTypesError, ListMyEventTypesResponse, LogInData, LogInError, LogInResponse, LogOutData, LogOutError, LogOutResponse, ReplaceMyScheduleData, ReplaceMyScheduleError, ReplaceMyScheduleResponse, SignUpData, SignUpError, SignUpResponse, UpdateEventTypeData, UpdateEventTypeError, UpdateEventTypeResponse, UpdateMeData, UpdateMeError, UpdateMeResponse } from '../types.gen';
+import { createEventType, getHealth, getMe, getMySchedule, getPublicEventType, getPublicHost, getReadiness, listMyEventTypes, listSlots, logIn, logOut, type Options, replaceMySchedule, signUp, updateEventType, updateMe } from '../sdk.gen';
+import type { CreateEventTypeData, CreateEventTypeError, CreateEventTypeResponse, GetHealthData, GetHealthResponse, GetMeData, GetMeError, GetMeResponse, GetMyScheduleData, GetMyScheduleError, GetMyScheduleResponse, GetPublicEventTypeData, GetPublicEventTypeError, GetPublicEventTypeResponse, GetPublicHostData, GetPublicHostError, GetPublicHostResponse, GetReadinessData, GetReadinessResponse, ListMyEventTypesData, ListMyEventTypesError, ListMyEventTypesResponse, ListSlotsData, ListSlotsError, ListSlotsResponse, LogInData, LogInError, LogInResponse, LogOutData, LogOutError, LogOutResponse, ReplaceMyScheduleData, ReplaceMyScheduleError, ReplaceMyScheduleResponse, SignUpData, SignUpError, SignUpResponse, UpdateEventTypeData, UpdateEventTypeError, UpdateEventTypeResponse, UpdateMeData, UpdateMeError, UpdateMeResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -288,4 +288,44 @@ export const getPublicHostOptions = (options: Options<GetPublicHostData>) => que
         return data;
     },
     queryKey: getPublicHostQueryKey(options)
+});
+
+export const getPublicEventTypeQueryKey = (options: Options<GetPublicEventTypeData>) => createQueryKey('getPublicEventType', options);
+
+/**
+ * Get Public Event Type
+ *
+ * An Event Type a Guest can book, with its Host's Public name.
+ */
+export const getPublicEventTypeOptions = (options: Options<GetPublicEventTypeData>) => queryOptions<GetPublicEventTypeResponse, GetPublicEventTypeError, GetPublicEventTypeResponse, ReturnType<typeof getPublicEventTypeQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getPublicEventType({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getPublicEventTypeQueryKey(options)
+});
+
+export const listSlotsQueryKey = (options: Options<ListSlotsData>) => createQueryKey('listSlots', options);
+
+/**
+ * List Slots
+ *
+ * Free Slot start times (UTC) in [from, to), clipped to the booking window.
+ */
+export const listSlotsOptions = (options: Options<ListSlotsData>) => queryOptions<ListSlotsResponse, ListSlotsError, ListSlotsResponse, ReturnType<typeof listSlotsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listSlots({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listSlotsQueryKey(options)
 });

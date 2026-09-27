@@ -16,6 +16,8 @@ class Settings(BaseSettings):
     # Send the Host's session cookie only over HTTPS. Turn off for plain-HTTP local setups.
     session_cookie_secure: bool = True
     session_lifetime_days: int = 30
+    # Guests can book this many days ahead, counting today, in the Host's time zone.
+    booking_window_days: int = 14
 
     @field_validator("cors_origins", mode="before")
     @classmethod
