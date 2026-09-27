@@ -759,10 +759,161 @@
           }
         }
       }
+    },
+    "/api/hosts/{handle}/event-types/{event_type_id}/bookings": {
+      "post": {
+        "tags": [
+          "bookings"
+        ],
+        "summary": "Create Booking",
+        "description": "Book a Slot as a Guest. No account needed (ADR 0002).",
+        "operationId": "create_booking",
+        "parameters": [
+          {
+            "name": "handle",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Handle"
+            }
+          },
+          {
+            "name": "event_type_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Event Type Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BookingRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookingConfirmation"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No such Host or bookable Event Type"
+          },
+          "409": {
+            "description": "The time was just taken by another Booking"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
+      "BookingConfirmation": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "start": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Start"
+          },
+          "end": {
+            "type": "string",
+            "format": "date-time",
+            "title": "End"
+          },
+          "event_type_title": {
+            "type": "string",
+            "title": "Event Type Title"
+          },
+          "host_public_name": {
+            "type": "string",
+            "title": "Host Public Name"
+          },
+          "guest_name": {
+            "type": "string",
+            "title": "Guest Name"
+          },
+          "guest_email": {
+            "type": "string",
+            "title": "Guest Email"
+          },
+          "guest_note": {
+            "type": "string",
+            "title": "Guest Note"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "start",
+          "end",
+          "event_type_title",
+          "host_public_name",
+          "guest_name",
+          "guest_email",
+          "guest_note"
+        ],
+        "title": "BookingConfirmation"
+      },
+      "BookingRequest": {
+        "properties": {
+          "start": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Start"
+          },
+          "guest_name": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1,
+            "title": "Guest Name"
+          },
+          "guest_email": {
+            "type": "string",
+            "format": "email",
+            "title": "Guest Email"
+          },
+          "guest_note": {
+            "type": "string",
+            "maxLength": 2000,
+            "title": "Guest Note",
+            "default": ""
+          }
+        },
+        "type": "object",
+        "required": [
+          "start",
+          "guest_name",
+          "guest_email"
+        ],
+        "title": "BookingRequest"
+      },
       "EventTypeCreate": {
         "properties": {
           "title": {

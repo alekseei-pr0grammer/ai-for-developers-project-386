@@ -8,6 +8,7 @@ from pydantic import AwareDatetime, BaseModel, ConfigDict
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from app.bookings import busy_ranges
 from app.clock import get_now
 from app.config import settings
 from app.db import get_session
@@ -116,5 +117,6 @@ def list_slots(
         window_days=settings.booking_window_days,
         start=start,
         end=end,
+        busy=busy_ranges(db, host.id, after=now),
     )
     return Slots(slots=slots)

@@ -43,3 +43,19 @@ def get_slots(
     )
     assert response.status_code == 200, response.text
     return response.json()["slots"]
+
+
+def book(
+    client: TestClient,
+    event_type_id: int,
+    start: str,
+    handle: str = "alex-alekseev",
+    **overrides: Any,
+) -> Response:
+    payload = {
+        "start": start,
+        "guest_name": "Grace Guest",
+        "guest_email": "grace@example.com",
+        "guest_note": "Let's talk about the project.",
+    } | overrides
+    return client.post(f"/api/hosts/{handle}/event-types/{event_type_id}/bookings", json=payload)

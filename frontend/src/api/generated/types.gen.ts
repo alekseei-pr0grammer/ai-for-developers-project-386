@@ -5,6 +5,66 @@ export type ClientOptions = {
 };
 
 /**
+ * BookingConfirmation
+ */
+export type BookingConfirmation = {
+    /**
+     * Id
+     */
+    id: number;
+    /**
+     * Start
+     */
+    start: string;
+    /**
+     * End
+     */
+    end: string;
+    /**
+     * Event Type Title
+     */
+    event_type_title: string;
+    /**
+     * Host Public Name
+     */
+    host_public_name: string;
+    /**
+     * Guest Name
+     */
+    guest_name: string;
+    /**
+     * Guest Email
+     */
+    guest_email: string;
+    /**
+     * Guest Note
+     */
+    guest_note: string;
+};
+
+/**
+ * BookingRequest
+ */
+export type BookingRequest = {
+    /**
+     * Start
+     */
+    start: string;
+    /**
+     * Guest Name
+     */
+    guest_name: string;
+    /**
+     * Guest Email
+     */
+    guest_email: string;
+    /**
+     * Guest Note
+     */
+    guest_note?: string;
+};
+
+/**
  * EventTypeCreate
  */
 export type EventTypeCreate = {
@@ -738,3 +798,45 @@ export type ListSlotsResponses = {
 };
 
 export type ListSlotsResponse = ListSlotsResponses[keyof ListSlotsResponses];
+
+export type CreateBookingData = {
+    body: BookingRequest;
+    path: {
+        /**
+         * Handle
+         */
+        handle: string;
+        /**
+         * Event Type Id
+         */
+        event_type_id: number;
+    };
+    query?: never;
+    url: '/api/hosts/{handle}/event-types/{event_type_id}/bookings';
+};
+
+export type CreateBookingErrors = {
+    /**
+     * No such Host or bookable Event Type
+     */
+    404: unknown;
+    /**
+     * The time was just taken by another Booking
+     */
+    409: unknown;
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CreateBookingError = CreateBookingErrors[keyof CreateBookingErrors];
+
+export type CreateBookingResponses = {
+    /**
+     * Successful Response
+     */
+    201: BookingConfirmation;
+};
+
+export type CreateBookingResponse = CreateBookingResponses[keyof CreateBookingResponses];

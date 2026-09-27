@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { CreateEventTypeData, CreateEventTypeErrors, CreateEventTypeResponses, GetHealthData, GetHealthResponses, GetMeData, GetMeErrors, GetMeResponses, GetMyScheduleData, GetMyScheduleErrors, GetMyScheduleResponses, GetPublicEventTypeData, GetPublicEventTypeErrors, GetPublicEventTypeResponses, GetPublicHostData, GetPublicHostErrors, GetPublicHostResponses, GetReadinessData, GetReadinessErrors, GetReadinessResponses, ListMyEventTypesData, ListMyEventTypesErrors, ListMyEventTypesResponses, ListSlotsData, ListSlotsErrors, ListSlotsResponses, LogInData, LogInErrors, LogInResponses, LogOutData, LogOutErrors, LogOutResponses, ReplaceMyScheduleData, ReplaceMyScheduleErrors, ReplaceMyScheduleResponses, SignUpData, SignUpErrors, SignUpResponses, UpdateEventTypeData, UpdateEventTypeErrors, UpdateEventTypeResponses, UpdateMeData, UpdateMeErrors, UpdateMeResponses } from './types.gen';
+import type { CreateBookingData, CreateBookingErrors, CreateBookingResponses, CreateEventTypeData, CreateEventTypeErrors, CreateEventTypeResponses, GetHealthData, GetHealthResponses, GetMeData, GetMeErrors, GetMeResponses, GetMyScheduleData, GetMyScheduleErrors, GetMyScheduleResponses, GetPublicEventTypeData, GetPublicEventTypeErrors, GetPublicEventTypeResponses, GetPublicHostData, GetPublicHostErrors, GetPublicHostResponses, GetReadinessData, GetReadinessErrors, GetReadinessResponses, ListMyEventTypesData, ListMyEventTypesErrors, ListMyEventTypesResponses, ListSlotsData, ListSlotsErrors, ListSlotsResponses, LogInData, LogInErrors, LogInResponses, LogOutData, LogOutErrors, LogOutResponses, ReplaceMyScheduleData, ReplaceMyScheduleErrors, ReplaceMyScheduleResponses, SignUpData, SignUpErrors, SignUpResponses, UpdateEventTypeData, UpdateEventTypeErrors, UpdateEventTypeResponses, UpdateMeData, UpdateMeErrors, UpdateMeResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -162,3 +162,17 @@ export const getPublicEventType = <ThrowOnError extends boolean = false>(options
  * Free Slot start times (UTC) in [from, to), clipped to the booking window.
  */
 export const listSlots = <ThrowOnError extends boolean = false>(options: Options<ListSlotsData, ThrowOnError>): RequestResult<ListSlotsResponses, ListSlotsErrors, ThrowOnError> => (options.client ?? client).get<ListSlotsResponses, ListSlotsErrors, ThrowOnError>({ url: '/api/hosts/{handle}/event-types/{event_type_id}/slots', ...options });
+
+/**
+ * Create Booking
+ *
+ * Book a Slot as a Guest. No account needed (ADR 0002).
+ */
+export const createBooking = <ThrowOnError extends boolean = false>(options: Options<CreateBookingData, ThrowOnError>): RequestResult<CreateBookingResponses, CreateBookingErrors, ThrowOnError> => (options.client ?? client).post<CreateBookingResponses, CreateBookingErrors, ThrowOnError>({
+    url: '/api/hosts/{handle}/event-types/{event_type_id}/bookings',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});

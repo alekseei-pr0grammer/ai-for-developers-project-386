@@ -2,7 +2,7 @@ from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.routing import APIRoute
 
-from app.api import auth, event_types, health, hosts, me, schedule
+from app.api import auth, bookings, event_types, health, hosts, me, schedule
 from app.config import settings
 
 # Bumped automatically by release-please (see release-please-config.json).
@@ -34,4 +34,5 @@ api.include_router(me.router)
 api.include_router(event_types.router)
 api.include_router(schedule.router)
 api.include_router(hosts.router)
+api.include_router(bookings.public_router)
 app.include_router(api)

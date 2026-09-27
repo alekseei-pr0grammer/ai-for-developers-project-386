@@ -1,6 +1,6 @@
 """Slots: the start times a Guest can pick. Derived, never stored."""
 
-from collections.abc import Iterator
+from collections.abc import Iterator, Sequence
 from datetime import UTC, date, datetime, timedelta
 from zoneinfo import ZoneInfo
 
@@ -16,12 +16,14 @@ def compute_slots(
     window_days: int,
     start: datetime,
     end: datetime,
+    busy: Sequence[tuple[datetime, datetime]] = (),
 ) -> list[datetime]:
     """Slot starts (UTC) in [start, end), not before `now` and within the booking window.
 
     Within each Weekly Schedule interval, Slots start at the interval's start and step
     by `duration`; a Slot must end by the interval's end. Local hours are converted per
-    day in the Host's time zone, so daylight saving changes are respected.
+    day in the Host's time zone, so daylight saving changes are respected. Slots that
+    overlap a `busy` range (the Host's active Bookings) are left out.
     """
     zone = ZoneInfo(time_zone)
     today = now.astimezone(zone).date()
@@ -32,6 +34,9 @@ def compute_slots(
         for day in _days(today, window_days)
         for slot in _day_slots(day, schedule, zone, duration)
         if lower <= slot < upper
+        and not any(
+            slot < busy_end and busy_start < slot + duration for busy_start, busy_end in busy
+        )
     ]
 
 

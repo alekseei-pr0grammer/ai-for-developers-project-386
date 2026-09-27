@@ -3,8 +3,8 @@
 import { type DefaultError, queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { createEventType, getHealth, getMe, getMySchedule, getPublicEventType, getPublicHost, getReadiness, listMyEventTypes, listSlots, logIn, logOut, type Options, replaceMySchedule, signUp, updateEventType, updateMe } from '../sdk.gen';
-import type { CreateEventTypeData, CreateEventTypeError, CreateEventTypeResponse, GetHealthData, GetHealthResponse, GetMeData, GetMeError, GetMeResponse, GetMyScheduleData, GetMyScheduleError, GetMyScheduleResponse, GetPublicEventTypeData, GetPublicEventTypeError, GetPublicEventTypeResponse, GetPublicHostData, GetPublicHostError, GetPublicHostResponse, GetReadinessData, GetReadinessResponse, ListMyEventTypesData, ListMyEventTypesError, ListMyEventTypesResponse, ListSlotsData, ListSlotsError, ListSlotsResponse, LogInData, LogInError, LogInResponse, LogOutData, LogOutError, LogOutResponse, ReplaceMyScheduleData, ReplaceMyScheduleError, ReplaceMyScheduleResponse, SignUpData, SignUpError, SignUpResponse, UpdateEventTypeData, UpdateEventTypeError, UpdateEventTypeResponse, UpdateMeData, UpdateMeError, UpdateMeResponse } from '../types.gen';
+import { createBooking, createEventType, getHealth, getMe, getMySchedule, getPublicEventType, getPublicHost, getReadiness, listMyEventTypes, listSlots, logIn, logOut, type Options, replaceMySchedule, signUp, updateEventType, updateMe } from '../sdk.gen';
+import type { CreateBookingData, CreateBookingError, CreateBookingResponse, CreateEventTypeData, CreateEventTypeError, CreateEventTypeResponse, GetHealthData, GetHealthResponse, GetMeData, GetMeError, GetMeResponse, GetMyScheduleData, GetMyScheduleError, GetMyScheduleResponse, GetPublicEventTypeData, GetPublicEventTypeError, GetPublicEventTypeResponse, GetPublicHostData, GetPublicHostError, GetPublicHostResponse, GetReadinessData, GetReadinessResponse, ListMyEventTypesData, ListMyEventTypesError, ListMyEventTypesResponse, ListSlotsData, ListSlotsError, ListSlotsResponse, LogInData, LogInError, LogInResponse, LogOutData, LogOutError, LogOutResponse, ReplaceMyScheduleData, ReplaceMyScheduleError, ReplaceMyScheduleResponse, SignUpData, SignUpError, SignUpResponse, UpdateEventTypeData, UpdateEventTypeError, UpdateEventTypeResponse, UpdateMeData, UpdateMeError, UpdateMeResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -329,3 +329,22 @@ export const listSlotsOptions = (options: Options<ListSlotsData>) => queryOption
     },
     queryKey: listSlotsQueryKey(options)
 });
+
+/**
+ * Create Booking
+ *
+ * Book a Slot as a Guest. No account needed (ADR 0002).
+ */
+export const createBookingMutation = (options?: Partial<Options<CreateBookingData>>): UseMutationOptions<CreateBookingResponse, CreateBookingError, Options<CreateBookingData>> => {
+    const mutationOptions: UseMutationOptions<CreateBookingResponse, CreateBookingError, Options<CreateBookingData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await createBooking({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
