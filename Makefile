@@ -9,7 +9,7 @@ install: ## Install backend and frontend dependencies
 	cd frontend && npm ci
 
 db: ## Start only Postgres (for local development)
-	docker compose up -d db
+	docker compose up -d --wait db
 
 dev-api: ## Run FastAPI with auto-reload on :8000 (applies migrations first)
 	cd backend && uv run alembic upgrade head && uv run fastapi dev app/main.py
@@ -25,7 +25,7 @@ lint: ## Lint and type-check everything
 	cd backend && uv run ruff check . && uv run ruff format --check .
 	cd frontend && npm run lint && npm run typecheck
 
-test: ## Run tests
+test: db ## Run tests (against the calendar_test database on the local Postgres)
 	cd backend && uv run pytest
 
 build: ## Build production Docker images
