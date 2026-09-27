@@ -47,6 +47,20 @@ export type HostResponse = {
 };
 
 /**
+ * HostUpdate
+ */
+export type HostUpdate = {
+    /**
+     * Public Name
+     */
+    public_name?: string | null;
+    /**
+     * Time Zone
+     */
+    time_zone?: string | null;
+};
+
+/**
  * LogInRequest
  */
 export type LogInRequest = {
@@ -270,3 +284,28 @@ export type GetMeResponses = {
 };
 
 export type GetMeResponse = GetMeResponses[keyof GetMeResponses];
+
+export type UpdateMeData = {
+    body: HostUpdate;
+    path?: never;
+    query?: never;
+    url: '/api/me';
+};
+
+export type UpdateMeErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UpdateMeError = UpdateMeErrors[keyof UpdateMeErrors];
+
+export type UpdateMeResponses = {
+    /**
+     * Successful Response
+     */
+    200: HostResponse;
+};
+
+export type UpdateMeResponse = UpdateMeResponses[keyof UpdateMeResponses];

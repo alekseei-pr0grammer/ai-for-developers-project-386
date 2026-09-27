@@ -3,8 +3,8 @@
 import { type DefaultError, queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { getHealth, getMe, getReadiness, logIn, logOut, type Options, signUp } from '../sdk.gen';
-import type { GetHealthData, GetHealthResponse, GetMeData, GetMeError, GetMeResponse, GetReadinessData, GetReadinessResponse, LogInData, LogInError, LogInResponse, LogOutData, LogOutError, LogOutResponse, SignUpData, SignUpError, SignUpResponse } from '../types.gen';
+import { getHealth, getMe, getReadiness, logIn, logOut, type Options, signUp, updateMe } from '../sdk.gen';
+import type { GetHealthData, GetHealthResponse, GetMeData, GetMeError, GetMeResponse, GetReadinessData, GetReadinessResponse, LogInData, LogInError, LogInResponse, LogOutData, LogOutError, LogOutResponse, SignUpData, SignUpError, SignUpResponse, UpdateMeData, UpdateMeError, UpdateMeResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -155,3 +155,22 @@ export const getMeOptions = (options?: Options<GetMeData>) => queryOptions<GetMe
     },
     queryKey: getMeQueryKey(options)
 });
+
+/**
+ * Update Me
+ *
+ * Change the Host's Public name and/or time zone. The Handle stays the same.
+ */
+export const updateMeMutation = (options?: Partial<Options<UpdateMeData>>): UseMutationOptions<UpdateMeResponse, UpdateMeError, Options<UpdateMeData>> => {
+    const mutationOptions: UseMutationOptions<UpdateMeResponse, UpdateMeError, Options<UpdateMeData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await updateMe({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};

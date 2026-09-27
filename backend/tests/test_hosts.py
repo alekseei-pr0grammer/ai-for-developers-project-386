@@ -116,3 +116,40 @@ def test_session_expires(client: TestClient, set_now) -> None:
     set_now(datetime(2026, 3, 1, tzinfo=UTC))
 
     assert client.get("/api/me").status_code == 401
+
+
+def test_host_changes_public_name_and_time_zone_but_keeps_handle(client: TestClient) -> None:
+    sign_up(client)
+
+    response = client.patch(
+        "/api/me", json={"public_name": "Acme Support", "time_zone": "Asia/Tokyo"}
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "email": "alex@example.com",
+        "public_name": "Acme Support",
+        "handle": "alex-alekseev",
+        "time_zone": "Asia/Tokyo",
+    }
+    assert client.get("/api/me").json()["public_name"] == "Acme Support"
+
+
+def test_host_cannot_change_handle(client: TestClient) -> None:
+    sign_up(client)
+
+    response = client.patch("/api/me", json={"handle": "someone-else"})
+
+    assert response.status_code == 422
+    assert client.get("/api/me").json()["handle"] == "alex-alekseev"
+
+
+def test_profile_update_is_validated(client: TestClient) -> None:
+    sign_up(client)
+
+    assert client.patch("/api/me", json={"public_name": "  "}).status_code == 422
+    assert client.patch("/api/me", json={"time_zone": "Nowhere/Land"}).status_code == 422
+
+
+def test_profile_update_needs_a_session(client: TestClient) -> None:
+    assert client.patch("/api/me", json={"public_name": "X"}).status_code == 401

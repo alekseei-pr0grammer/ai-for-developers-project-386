@@ -3,6 +3,7 @@ import { Check, Copy } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { logOutMutation } from '@/api/generated/@tanstack/react-query.gen'
+import { ProfileCard } from '@/components/profile-card'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { useCurrentHost } from '@/hooks/use-current-host'
@@ -34,6 +35,7 @@ export function DashboardPage() {
         </Button>
       </div>
       <PublicLinkCard handle={host.handle} />
+      <ProfileCard host={host} />
     </div>
   )
 }
