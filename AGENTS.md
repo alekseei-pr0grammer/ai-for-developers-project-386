@@ -49,3 +49,17 @@ FastAPI  →  Postgres
 - **CI:** besides `make lint` and `make test`, it checks that `make api-client` output is committed and that `docker compose up --wait` starts healthy, so run those too when you touch the API or Docker files. A red CI run means a real problem: fix the cause, never skip or weaken a check. Debug with `gh run list` and `gh run view <id> --log-failed`. When adding a check, add it to both the `Makefile` and `ci.yml`.
 - **Releases:** release-please owns versions and `CHANGELOG.md`. Never bump a version or edit the changelog by hand. The version lives in `.release-please-manifest.json` and is copied to every file listed under `extra-files` in `release-please-config.json`; if you add a new place that holds the app version, add it there. `feat` → minor, `fix` → patch (while < 1.0).
 - **Commits:** use [Conventional Commits](https://www.conventionalcommits.org/): `type(scope): summary`, e.g. `feat(api): add bookings endpoint`, `fix(web): ...`. Types: `feat`, `fix`, `docs`, `refactor`, `test`, `ci`, `build`, `chore`. Scopes: `api`, `web`, `db`, `docker`.
+
+## Agent skills
+
+### Issue tracker
+
+Issues and specs live in this repo's GitHub Issues, managed via the `gh` CLI. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Default vocabulary: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: one `CONTEXT.md` and `docs/adr/` at the repo root (created lazily). See `docs/agents/domain.md`.
