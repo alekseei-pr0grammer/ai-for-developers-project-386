@@ -12,7 +12,7 @@ db: ## Start only Postgres (for local development)
 	docker compose up -d --wait db
 
 dev-api: ## Run FastAPI with auto-reload on :8000 (applies migrations first)
-	cd backend && uv run alembic upgrade head && uv run fastapi dev app/main.py
+	cd backend && uv run alembic upgrade head && SESSION_COOKIE_SECURE=false uv run fastapi dev app/main.py
 
 dev-web: ## Run Vite dev server on :5173 (proxies /api to :8000)
 	cd frontend && npm run dev

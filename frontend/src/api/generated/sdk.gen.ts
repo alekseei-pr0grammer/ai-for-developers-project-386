@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { GetHealthData, GetHealthResponses, GetReadinessData, GetReadinessErrors, GetReadinessResponses } from './types.gen';
+import type { GetHealthData, GetHealthResponses, GetMeData, GetMeErrors, GetMeResponses, GetReadinessData, GetReadinessErrors, GetReadinessResponses, LogInData, LogInErrors, LogInResponses, LogOutData, LogOutErrors, LogOutResponses, SignUpData, SignUpErrors, SignUpResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -31,3 +31,45 @@ export const getHealth = <ThrowOnError extends boolean = false>(options?: Option
  * Readiness: the app can serve traffic, i.e. the database answers.
  */
 export const getReadiness = <ThrowOnError extends boolean = false>(options?: Options<GetReadinessData, ThrowOnError>): RequestResult<GetReadinessResponses, GetReadinessErrors, ThrowOnError> => (options?.client ?? client).get<GetReadinessResponses, GetReadinessErrors, ThrowOnError>({ url: '/api/health/ready', ...options });
+
+/**
+ * Sign Up
+ *
+ * Create a Host account and log it in.
+ */
+export const signUp = <ThrowOnError extends boolean = false>(options: Options<SignUpData, ThrowOnError>): RequestResult<SignUpResponses, SignUpErrors, ThrowOnError> => (options.client ?? client).post<SignUpResponses, SignUpErrors, ThrowOnError>({
+    url: '/api/auth/signup',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Log In
+ *
+ * Log a Host in with email and password.
+ */
+export const logIn = <ThrowOnError extends boolean = false>(options: Options<LogInData, ThrowOnError>): RequestResult<LogInResponses, LogInErrors, ThrowOnError> => (options.client ?? client).post<LogInResponses, LogInErrors, ThrowOnError>({
+    url: '/api/auth/login',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Log Out
+ *
+ * End the current session, if any.
+ */
+export const logOut = <ThrowOnError extends boolean = false>(options?: Options<LogOutData, ThrowOnError>): RequestResult<LogOutResponses, LogOutErrors, ThrowOnError> => (options?.client ?? client).post<LogOutResponses, LogOutErrors, ThrowOnError>({ url: '/api/auth/logout', ...options });
+
+/**
+ * Get Me
+ *
+ * The logged-in Host.
+ */
+export const getMe = <ThrowOnError extends boolean = false>(options?: Options<GetMeData, ThrowOnError>): RequestResult<GetMeResponses, GetMeErrors, ThrowOnError> => (options?.client ?? client).get<GetMeResponses, GetMeErrors, ThrowOnError>({ url: '/api/me', ...options });

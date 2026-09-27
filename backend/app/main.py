@@ -2,7 +2,7 @@ from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.routing import APIRoute
 
-from app.api import health
+from app.api import auth, health, me
 from app.config import settings
 
 # Bumped automatically by release-please (see release-please-config.json).
@@ -29,4 +29,6 @@ if settings.cors_origins:
 
 api = APIRouter(prefix="/api")
 api.include_router(health.router)
+api.include_router(auth.router)
+api.include_router(me.router)
 app.include_router(api)

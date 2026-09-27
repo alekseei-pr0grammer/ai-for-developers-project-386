@@ -5,6 +5,16 @@ export type ClientOptions = {
 };
 
 /**
+ * HTTPValidationError
+ */
+export type HttpValidationError = {
+    /**
+     * Detail
+     */
+    detail?: Array<ValidationError>;
+};
+
+/**
  * HealthResponse
  */
 export type HealthResponse = {
@@ -12,6 +22,42 @@ export type HealthResponse = {
      * Status
      */
     status: 'ok';
+};
+
+/**
+ * HostResponse
+ */
+export type HostResponse = {
+    /**
+     * Email
+     */
+    email: string;
+    /**
+     * Public Name
+     */
+    public_name: string;
+    /**
+     * Handle
+     */
+    handle: string;
+    /**
+     * Time Zone
+     */
+    time_zone: string;
+};
+
+/**
+ * LogInRequest
+ */
+export type LogInRequest = {
+    /**
+     * Email
+     */
+    email: string;
+    /**
+     * Password
+     */
+    password: string;
 };
 
 /**
@@ -26,6 +72,56 @@ export type ReadinessResponse = {
      * Database
      */
     database: 'ok';
+};
+
+/**
+ * SignUpRequest
+ */
+export type SignUpRequest = {
+    /**
+     * Email
+     */
+    email: string;
+    /**
+     * Password
+     */
+    password: string;
+    /**
+     * Public Name
+     */
+    public_name: string;
+    /**
+     * Time Zone
+     */
+    time_zone: string;
+};
+
+/**
+ * ValidationError
+ */
+export type ValidationError = {
+    /**
+     * Location
+     */
+    loc: Array<string | number>;
+    /**
+     * Message
+     */
+    msg: string;
+    /**
+     * Error Type
+     */
+    type: string;
+    /**
+     * Input
+     */
+    input?: unknown;
+    /**
+     * Context
+     */
+    ctx?: {
+        [key: string]: unknown;
+    };
 };
 
 export type GetHealthData = {
@@ -66,3 +162,111 @@ export type GetReadinessResponses = {
 };
 
 export type GetReadinessResponse = GetReadinessResponses[keyof GetReadinessResponses];
+
+export type SignUpData = {
+    body: SignUpRequest;
+    path?: never;
+    query?: never;
+    url: '/api/auth/signup';
+};
+
+export type SignUpErrors = {
+    /**
+     * Email already registered
+     */
+    409: unknown;
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type SignUpError = SignUpErrors[keyof SignUpErrors];
+
+export type SignUpResponses = {
+    /**
+     * Successful Response
+     */
+    201: HostResponse;
+};
+
+export type SignUpResponse = SignUpResponses[keyof SignUpResponses];
+
+export type LogInData = {
+    body: LogInRequest;
+    path?: never;
+    query?: never;
+    url: '/api/auth/login';
+};
+
+export type LogInErrors = {
+    /**
+     * Wrong email or password
+     */
+    401: unknown;
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type LogInError = LogInErrors[keyof LogInErrors];
+
+export type LogInResponses = {
+    /**
+     * Successful Response
+     */
+    200: HostResponse;
+};
+
+export type LogInResponse = LogInResponses[keyof LogInResponses];
+
+export type LogOutData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/auth/logout';
+};
+
+export type LogOutErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type LogOutError = LogOutErrors[keyof LogOutErrors];
+
+export type LogOutResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type LogOutResponse = LogOutResponses[keyof LogOutResponses];
+
+export type GetMeData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/me';
+};
+
+export type GetMeErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetMeError = GetMeErrors[keyof GetMeErrors];
+
+export type GetMeResponses = {
+    /**
+     * Successful Response
+     */
+    200: HostResponse;
+};
+
+export type GetMeResponse = GetMeResponses[keyof GetMeResponses];

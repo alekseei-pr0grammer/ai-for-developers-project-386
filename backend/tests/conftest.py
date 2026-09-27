@@ -19,6 +19,8 @@ TEST_DATABASE_URL = os.environ.get(
 )
 # Must be set before the app is imported: its engine and settings read it at import time.
 os.environ["DATABASE_URL"] = TEST_DATABASE_URL
+# TestClient talks plain HTTP, which would drop a Secure cookie.
+os.environ["SESSION_COOKIE_SECURE"] = "false"
 
 from alembic import command  # noqa: E402
 from alembic.config import Config  # noqa: E402

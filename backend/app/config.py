@@ -13,6 +13,9 @@ class Settings(BaseSettings):
     # Origins allowed to call the API from a browser, comma-separated.
     # Only needed when the frontend is served from a different origin (e.g. a CDN).
     cors_origins: Annotated[list[str], NoDecode] = []
+    # Send the Host's session cookie only over HTTPS. Turn off for plain-HTTP local setups.
+    session_cookie_secure: bool = True
+    session_lifetime_days: int = 30
 
     @field_validator("cors_origins", mode="before")
     @classmethod

@@ -33,6 +33,8 @@ services:
     image: calendar-api
     environment:
       DATABASE_URL: postgresql+psycopg://calendar:calendar@db:5432/calendar
+      # The local stack is plain HTTP on :8080; production (HTTPS) keeps the default (true).
+      SESSION_COOKIE_SECURE: "false"
     ports:
       - "8000:8000"
     depends_on:
