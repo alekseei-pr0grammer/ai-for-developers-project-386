@@ -14,6 +14,7 @@ from app.clock import get_now
 from app.db import get_session
 from app.handles import derive_handle
 from app.models import Host
+from app.schedule import DEFAULT_SCHEDULE, replace_schedule
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -63,6 +64,8 @@ def sign_up(
         )
         db.add(host)
         try:
+            db.flush()
+            replace_schedule(db, host.id, DEFAULT_SCHEDULE)
             db.commit()
             break
         except IntegrityError:

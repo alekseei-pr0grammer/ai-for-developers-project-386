@@ -6,8 +6,12 @@ export function errorMessage(error: unknown): string {
     if (Array.isArray(detail) && detail.length > 0) {
       const [first] = detail as { loc?: (string | number)[]; msg?: string }[]
       const field = first.loc?.at(-1)
-      const message = first.msg ?? 'is invalid'
-      return typeof field === 'string' ? `${field.replaceAll('_', ' ')}: ${message}` : message
+      // Pydantic prefixes errors raised by our own validators with "Value error, ".
+      const message = (first.msg ?? 'is invalid').replace(/^Value error, /, '')
+      // loc ends in "body" for errors about the request as a whole.
+      return typeof field === 'string' && field !== 'body'
+        ? `${field.replaceAll('_', ' ')}: ${message}`
+        : message
     }
   }
   return 'Something went wrong. Please try again.'

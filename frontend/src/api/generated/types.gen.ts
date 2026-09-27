@@ -195,6 +195,28 @@ export type ReadinessResponse = {
 };
 
 /**
+ * ScheduleIntervalModel
+ *
+ * Local wall-clock hours on a weekday, in the Host's time zone.
+ */
+export type ScheduleIntervalModel = {
+    /**
+     * Weekday
+     *
+     * 0 = Monday ... 6 = Sunday
+     */
+    weekday: number;
+    /**
+     * Start
+     */
+    start: string;
+    /**
+     * End
+     */
+    end: string;
+};
+
+/**
  * SignUpRequest
  */
 export type SignUpRequest = {
@@ -242,6 +264,16 @@ export type ValidationError = {
     ctx?: {
         [key: string]: unknown;
     };
+};
+
+/**
+ * WeeklySchedule
+ */
+export type WeeklySchedule = {
+    /**
+     * Intervals
+     */
+    intervals: Array<ScheduleIntervalModel>;
 };
 
 export type GetHealthData = {
@@ -501,6 +533,56 @@ export type UpdateEventTypeResponses = {
 };
 
 export type UpdateEventTypeResponse = UpdateEventTypeResponses[keyof UpdateEventTypeResponses];
+
+export type GetMyScheduleData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/me/schedule';
+};
+
+export type GetMyScheduleErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetMyScheduleError = GetMyScheduleErrors[keyof GetMyScheduleErrors];
+
+export type GetMyScheduleResponses = {
+    /**
+     * Successful Response
+     */
+    200: WeeklySchedule;
+};
+
+export type GetMyScheduleResponse = GetMyScheduleResponses[keyof GetMyScheduleResponses];
+
+export type ReplaceMyScheduleData = {
+    body: WeeklySchedule;
+    path?: never;
+    query?: never;
+    url: '/api/me/schedule';
+};
+
+export type ReplaceMyScheduleErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ReplaceMyScheduleError = ReplaceMyScheduleErrors[keyof ReplaceMyScheduleErrors];
+
+export type ReplaceMyScheduleResponses = {
+    /**
+     * Successful Response
+     */
+    200: WeeklySchedule;
+};
+
+export type ReplaceMyScheduleResponse = ReplaceMyScheduleResponses[keyof ReplaceMyScheduleResponses];
 
 export type GetPublicHostData = {
     body?: never;

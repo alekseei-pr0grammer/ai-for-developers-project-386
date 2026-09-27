@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router'
 import { logOutMutation } from '@/api/generated/@tanstack/react-query.gen'
 import { EventTypesCard } from '@/components/event-types-card'
 import { ProfileCard } from '@/components/profile-card'
+import { ScheduleCard } from '@/components/schedule-card'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { useCurrentHost } from '@/hooks/use-current-host'
@@ -37,6 +38,7 @@ export function DashboardPage() {
       </div>
       <PublicLinkCard handle={host.handle} />
       <EventTypesCard />
+      <ScheduleCard timeZone={host.time_zone} />
       <ProfileCard host={host} />
     </div>
   )

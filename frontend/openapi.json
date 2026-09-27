@@ -476,6 +476,114 @@
         }
       }
     },
+    "/api/me/schedule": {
+      "get": {
+        "tags": [
+          "schedule"
+        ],
+        "summary": "Get My Schedule",
+        "description": "The Host's Weekly Schedule, ordered by weekday and start.",
+        "operationId": "get_my_schedule",
+        "parameters": [
+          {
+            "name": "session",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Session"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeeklySchedule"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "schedule"
+        ],
+        "summary": "Replace My Schedule",
+        "description": "Replace the whole Weekly Schedule at once.",
+        "operationId": "replace_my_schedule",
+        "parameters": [
+          {
+            "name": "session",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Session"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WeeklySchedule"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeeklySchedule"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/hosts/{handle}": {
       "get": {
         "tags": [
@@ -821,6 +929,35 @@
         ],
         "title": "ReadinessResponse"
       },
+      "ScheduleIntervalModel": {
+        "properties": {
+          "weekday": {
+            "type": "integer",
+            "maximum": 6.0,
+            "minimum": 0.0,
+            "title": "Weekday",
+            "description": "0 = Monday ... 6 = Sunday"
+          },
+          "start": {
+            "type": "string",
+            "format": "time",
+            "title": "Start"
+          },
+          "end": {
+            "type": "string",
+            "format": "time",
+            "title": "End"
+          }
+        },
+        "type": "object",
+        "required": [
+          "weekday",
+          "start",
+          "end"
+        ],
+        "title": "ScheduleIntervalModel",
+        "description": "Local wall-clock hours on a weekday, in the Host's time zone."
+      },
       "SignUpRequest": {
         "properties": {
           "email": {
@@ -893,6 +1030,22 @@
           "type"
         ],
         "title": "ValidationError"
+      },
+      "WeeklySchedule": {
+        "properties": {
+          "intervals": {
+            "items": {
+              "$ref": "#/components/schemas/ScheduleIntervalModel"
+            },
+            "type": "array",
+            "title": "Intervals"
+          }
+        },
+        "type": "object",
+        "required": [
+          "intervals"
+        ],
+        "title": "WeeklySchedule"
       }
     }
   }

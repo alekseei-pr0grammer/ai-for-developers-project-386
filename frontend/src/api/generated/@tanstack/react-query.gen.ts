@@ -3,8 +3,8 @@
 import { type DefaultError, queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { createEventType, getHealth, getMe, getPublicHost, getReadiness, listMyEventTypes, logIn, logOut, type Options, signUp, updateEventType, updateMe } from '../sdk.gen';
-import type { CreateEventTypeData, CreateEventTypeError, CreateEventTypeResponse, GetHealthData, GetHealthResponse, GetMeData, GetMeError, GetMeResponse, GetPublicHostData, GetPublicHostError, GetPublicHostResponse, GetReadinessData, GetReadinessResponse, ListMyEventTypesData, ListMyEventTypesError, ListMyEventTypesResponse, LogInData, LogInError, LogInResponse, LogOutData, LogOutError, LogOutResponse, SignUpData, SignUpError, SignUpResponse, UpdateEventTypeData, UpdateEventTypeError, UpdateEventTypeResponse, UpdateMeData, UpdateMeError, UpdateMeResponse } from '../types.gen';
+import { createEventType, getHealth, getMe, getMySchedule, getPublicHost, getReadiness, listMyEventTypes, logIn, logOut, type Options, replaceMySchedule, signUp, updateEventType, updateMe } from '../sdk.gen';
+import type { CreateEventTypeData, CreateEventTypeError, CreateEventTypeResponse, GetHealthData, GetHealthResponse, GetMeData, GetMeError, GetMeResponse, GetMyScheduleData, GetMyScheduleError, GetMyScheduleResponse, GetPublicHostData, GetPublicHostError, GetPublicHostResponse, GetReadinessData, GetReadinessResponse, ListMyEventTypesData, ListMyEventTypesError, ListMyEventTypesResponse, LogInData, LogInError, LogInResponse, LogOutData, LogOutError, LogOutResponse, ReplaceMyScheduleData, ReplaceMyScheduleError, ReplaceMyScheduleResponse, SignUpData, SignUpError, SignUpResponse, UpdateEventTypeData, UpdateEventTypeError, UpdateEventTypeResponse, UpdateMeData, UpdateMeError, UpdateMeResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -221,6 +221,45 @@ export const updateEventTypeMutation = (options?: Partial<Options<UpdateEventTyp
     const mutationOptions: UseMutationOptions<UpdateEventTypeResponse, UpdateEventTypeError, Options<UpdateEventTypeData>> = {
         mutationFn: async (fnOptions) => {
             const { data } = await updateEventType({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getMyScheduleQueryKey = (options?: Options<GetMyScheduleData>) => createQueryKey('getMySchedule', options);
+
+/**
+ * Get My Schedule
+ *
+ * The Host's Weekly Schedule, ordered by weekday and start.
+ */
+export const getMyScheduleOptions = (options?: Options<GetMyScheduleData>) => queryOptions<GetMyScheduleResponse, GetMyScheduleError, GetMyScheduleResponse, ReturnType<typeof getMyScheduleQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getMySchedule({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getMyScheduleQueryKey(options)
+});
+
+/**
+ * Replace My Schedule
+ *
+ * Replace the whole Weekly Schedule at once.
+ */
+export const replaceMyScheduleMutation = (options?: Partial<Options<ReplaceMyScheduleData>>): UseMutationOptions<ReplaceMyScheduleResponse, ReplaceMyScheduleError, Options<ReplaceMyScheduleData>> => {
+    const mutationOptions: UseMutationOptions<ReplaceMyScheduleResponse, ReplaceMyScheduleError, Options<ReplaceMyScheduleData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await replaceMySchedule({
                 ...options,
                 ...fnOptions,
                 throwOnError: true

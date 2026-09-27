@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { CreateEventTypeData, CreateEventTypeErrors, CreateEventTypeResponses, GetHealthData, GetHealthResponses, GetMeData, GetMeErrors, GetMeResponses, GetPublicHostData, GetPublicHostErrors, GetPublicHostResponses, GetReadinessData, GetReadinessErrors, GetReadinessResponses, ListMyEventTypesData, ListMyEventTypesErrors, ListMyEventTypesResponses, LogInData, LogInErrors, LogInResponses, LogOutData, LogOutErrors, LogOutResponses, SignUpData, SignUpErrors, SignUpResponses, UpdateEventTypeData, UpdateEventTypeErrors, UpdateEventTypeResponses, UpdateMeData, UpdateMeErrors, UpdateMeResponses } from './types.gen';
+import type { CreateEventTypeData, CreateEventTypeErrors, CreateEventTypeResponses, GetHealthData, GetHealthResponses, GetMeData, GetMeErrors, GetMeResponses, GetMyScheduleData, GetMyScheduleErrors, GetMyScheduleResponses, GetPublicHostData, GetPublicHostErrors, GetPublicHostResponses, GetReadinessData, GetReadinessErrors, GetReadinessResponses, ListMyEventTypesData, ListMyEventTypesErrors, ListMyEventTypesResponses, LogInData, LogInErrors, LogInResponses, LogOutData, LogOutErrors, LogOutResponses, ReplaceMyScheduleData, ReplaceMyScheduleErrors, ReplaceMyScheduleResponses, SignUpData, SignUpErrors, SignUpResponses, UpdateEventTypeData, UpdateEventTypeErrors, UpdateEventTypeResponses, UpdateMeData, UpdateMeErrors, UpdateMeResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -114,6 +114,27 @@ export const createEventType = <ThrowOnError extends boolean = false>(options: O
  */
 export const updateEventType = <ThrowOnError extends boolean = false>(options: Options<UpdateEventTypeData, ThrowOnError>): RequestResult<UpdateEventTypeResponses, UpdateEventTypeErrors, ThrowOnError> => (options.client ?? client).patch<UpdateEventTypeResponses, UpdateEventTypeErrors, ThrowOnError>({
     url: '/api/me/event-types/{event_type_id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Get My Schedule
+ *
+ * The Host's Weekly Schedule, ordered by weekday and start.
+ */
+export const getMySchedule = <ThrowOnError extends boolean = false>(options?: Options<GetMyScheduleData, ThrowOnError>): RequestResult<GetMyScheduleResponses, GetMyScheduleErrors, ThrowOnError> => (options?.client ?? client).get<GetMyScheduleResponses, GetMyScheduleErrors, ThrowOnError>({ url: '/api/me/schedule', ...options });
+
+/**
+ * Replace My Schedule
+ *
+ * Replace the whole Weekly Schedule at once.
+ */
+export const replaceMySchedule = <ThrowOnError extends boolean = false>(options: Options<ReplaceMyScheduleData, ThrowOnError>): RequestResult<ReplaceMyScheduleResponses, ReplaceMyScheduleErrors, ThrowOnError> => (options.client ?? client).put<ReplaceMyScheduleResponses, ReplaceMyScheduleErrors, ThrowOnError>({
+    url: '/api/me/schedule',
     ...options,
     headers: {
         'Content-Type': 'application/json',
