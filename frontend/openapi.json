@@ -292,10 +292,356 @@
           }
         }
       }
+    },
+    "/api/me/event-types": {
+      "get": {
+        "tags": [
+          "event types"
+        ],
+        "summary": "List My Event Types",
+        "description": "All of the Host's Event Types, archived ones included, oldest first.",
+        "operationId": "list_my_event_types",
+        "parameters": [
+          {
+            "name": "session",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Session"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EventTypeResponse"
+                  },
+                  "title": "Response List My Event Types"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "event types"
+        ],
+        "summary": "Create Event Type",
+        "operationId": "create_event_type",
+        "parameters": [
+          {
+            "name": "session",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Session"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventTypeCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventTypeResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/me/event-types/{event_type_id}": {
+      "patch": {
+        "tags": [
+          "event types"
+        ],
+        "summary": "Update Event Type",
+        "description": "Edit or (un)archive an Event Type. Existing Bookings keep their own start and end.",
+        "operationId": "update_event_type",
+        "parameters": [
+          {
+            "name": "event_type_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Event Type Id"
+            }
+          },
+          {
+            "name": "session",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Session"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventTypeUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventTypeResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No such Event Type of this Host"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/hosts/{handle}": {
+      "get": {
+        "tags": [
+          "hosts"
+        ],
+        "summary": "Get Public Host",
+        "description": "A Host's Public name and the Event Types Guests can book.",
+        "operationId": "get_public_host",
+        "parameters": [
+          {
+            "name": "handle",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Handle"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicHost"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No Host with this Handle"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
+      "EventTypeCreate": {
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1,
+            "title": "Title"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 2000,
+            "title": "Description",
+            "default": ""
+          },
+          "duration_minutes": {
+            "type": "integer",
+            "maximum": 720.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Duration Minutes"
+          }
+        },
+        "type": "object",
+        "required": [
+          "title",
+          "duration_minutes"
+        ],
+        "title": "EventTypeCreate"
+      },
+      "EventTypeResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "duration_minutes": {
+            "type": "integer",
+            "title": "Duration Minutes"
+          },
+          "archived": {
+            "type": "boolean",
+            "title": "Archived"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "description",
+          "duration_minutes",
+          "archived"
+        ],
+        "title": "EventTypeResponse"
+      },
+      "EventTypeUpdate": {
+        "properties": {
+          "title": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "duration_minutes": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 720.0,
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duration Minutes"
+          },
+          "archived": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Archived"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "EventTypeUpdate"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -400,6 +746,60 @@
           "password"
         ],
         "title": "LogInRequest"
+      },
+      "PublicEventType": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "duration_minutes": {
+            "type": "integer",
+            "title": "Duration Minutes"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "description",
+          "duration_minutes"
+        ],
+        "title": "PublicEventType"
+      },
+      "PublicHost": {
+        "properties": {
+          "public_name": {
+            "type": "string",
+            "title": "Public Name"
+          },
+          "handle": {
+            "type": "string",
+            "title": "Handle"
+          },
+          "event_types": {
+            "items": {
+              "$ref": "#/components/schemas/PublicEventType"
+            },
+            "type": "array",
+            "title": "Event Types"
+          }
+        },
+        "type": "object",
+        "required": [
+          "public_name",
+          "handle",
+          "event_types"
+        ],
+        "title": "PublicHost"
       },
       "ReadinessResponse": {
         "properties": {

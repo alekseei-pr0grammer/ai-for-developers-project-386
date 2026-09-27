@@ -3,6 +3,7 @@ import { Check, Copy } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { logOutMutation } from '@/api/generated/@tanstack/react-query.gen'
+import { EventTypesCard } from '@/components/event-types-card'
 import { ProfileCard } from '@/components/profile-card'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -35,6 +36,7 @@ export function DashboardPage() {
         </Button>
       </div>
       <PublicLinkCard handle={host.handle} />
+      <EventTypesCard />
       <ProfileCard host={host} />
     </div>
   )

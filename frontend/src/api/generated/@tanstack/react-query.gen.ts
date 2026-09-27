@@ -3,8 +3,8 @@
 import { type DefaultError, queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { getHealth, getMe, getReadiness, logIn, logOut, type Options, signUp, updateMe } from '../sdk.gen';
-import type { GetHealthData, GetHealthResponse, GetMeData, GetMeError, GetMeResponse, GetReadinessData, GetReadinessResponse, LogInData, LogInError, LogInResponse, LogOutData, LogOutError, LogOutResponse, SignUpData, SignUpError, SignUpResponse, UpdateMeData, UpdateMeError, UpdateMeResponse } from '../types.gen';
+import { createEventType, getHealth, getMe, getPublicHost, getReadiness, listMyEventTypes, logIn, logOut, type Options, signUp, updateEventType, updateMe } from '../sdk.gen';
+import type { CreateEventTypeData, CreateEventTypeError, CreateEventTypeResponse, GetHealthData, GetHealthResponse, GetMeData, GetMeError, GetMeResponse, GetPublicHostData, GetPublicHostError, GetPublicHostResponse, GetReadinessData, GetReadinessResponse, ListMyEventTypesData, ListMyEventTypesError, ListMyEventTypesResponse, LogInData, LogInError, LogInResponse, LogOutData, LogOutError, LogOutResponse, SignUpData, SignUpError, SignUpResponse, UpdateEventTypeData, UpdateEventTypeError, UpdateEventTypeResponse, UpdateMeData, UpdateMeError, UpdateMeResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -174,3 +174,79 @@ export const updateMeMutation = (options?: Partial<Options<UpdateMeData>>): UseM
     };
     return mutationOptions;
 };
+
+export const listMyEventTypesQueryKey = (options?: Options<ListMyEventTypesData>) => createQueryKey('listMyEventTypes', options);
+
+/**
+ * List My Event Types
+ *
+ * All of the Host's Event Types, archived ones included, oldest first.
+ */
+export const listMyEventTypesOptions = (options?: Options<ListMyEventTypesData>) => queryOptions<ListMyEventTypesResponse, ListMyEventTypesError, ListMyEventTypesResponse, ReturnType<typeof listMyEventTypesQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listMyEventTypes({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listMyEventTypesQueryKey(options)
+});
+
+/**
+ * Create Event Type
+ */
+export const createEventTypeMutation = (options?: Partial<Options<CreateEventTypeData>>): UseMutationOptions<CreateEventTypeResponse, CreateEventTypeError, Options<CreateEventTypeData>> => {
+    const mutationOptions: UseMutationOptions<CreateEventTypeResponse, CreateEventTypeError, Options<CreateEventTypeData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await createEventType({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Update Event Type
+ *
+ * Edit or (un)archive an Event Type. Existing Bookings keep their own start and end.
+ */
+export const updateEventTypeMutation = (options?: Partial<Options<UpdateEventTypeData>>): UseMutationOptions<UpdateEventTypeResponse, UpdateEventTypeError, Options<UpdateEventTypeData>> => {
+    const mutationOptions: UseMutationOptions<UpdateEventTypeResponse, UpdateEventTypeError, Options<UpdateEventTypeData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await updateEventType({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getPublicHostQueryKey = (options: Options<GetPublicHostData>) => createQueryKey('getPublicHost', options);
+
+/**
+ * Get Public Host
+ *
+ * A Host's Public name and the Event Types Guests can book.
+ */
+export const getPublicHostOptions = (options: Options<GetPublicHostData>) => queryOptions<GetPublicHostResponse, GetPublicHostError, GetPublicHostResponse, ReturnType<typeof getPublicHostQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getPublicHost({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getPublicHostQueryKey(options)
+});

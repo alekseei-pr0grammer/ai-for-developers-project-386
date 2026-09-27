@@ -2,15 +2,7 @@ from datetime import UTC, datetime
 
 from fastapi.testclient import TestClient
 
-
-def sign_up(client: TestClient, **overrides: str):
-    payload = {
-        "email": "alex@example.com",
-        "password": "correct horse battery",
-        "public_name": "Alex Alekseev",
-        "time_zone": "Europe/London",
-    } | overrides
-    return client.post("/api/auth/signup", json=payload)
+from tests.api import sign_up
 
 
 def test_sign_up_creates_host_and_starts_session(client: TestClient) -> None:

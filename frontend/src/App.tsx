@@ -5,6 +5,7 @@ import { DashboardPage } from '@/pages/dashboard-page'
 import { LandingPage } from '@/pages/landing-page'
 import { LogInPage } from '@/pages/log-in-page'
 import { NotFoundPage } from '@/pages/not-found-page'
+import { PublicHostPage } from '@/pages/public-host-page'
 import { SignUpPage } from '@/pages/sign-up-page'
 
 const router = createBrowserRouter([
@@ -18,6 +19,7 @@ const router = createBrowserRouter([
         element: <RequireHost />,
         children: [{ path: '/dashboard', element: <DashboardPage /> }],
       },
+      { path: '/:handle', element: <PublicHostPage /> },
       { path: '*', element: <NotFoundPage /> },
     ],
   },

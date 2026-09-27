@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { GetHealthData, GetHealthResponses, GetMeData, GetMeErrors, GetMeResponses, GetReadinessData, GetReadinessErrors, GetReadinessResponses, LogInData, LogInErrors, LogInResponses, LogOutData, LogOutErrors, LogOutResponses, SignUpData, SignUpErrors, SignUpResponses, UpdateMeData, UpdateMeErrors, UpdateMeResponses } from './types.gen';
+import type { CreateEventTypeData, CreateEventTypeErrors, CreateEventTypeResponses, GetHealthData, GetHealthResponses, GetMeData, GetMeErrors, GetMeResponses, GetPublicHostData, GetPublicHostErrors, GetPublicHostResponses, GetReadinessData, GetReadinessErrors, GetReadinessResponses, ListMyEventTypesData, ListMyEventTypesErrors, ListMyEventTypesResponses, LogInData, LogInErrors, LogInResponses, LogOutData, LogOutErrors, LogOutResponses, SignUpData, SignUpErrors, SignUpResponses, UpdateEventTypeData, UpdateEventTypeErrors, UpdateEventTypeResponses, UpdateMeData, UpdateMeErrors, UpdateMeResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -87,3 +87,43 @@ export const updateMe = <ThrowOnError extends boolean = false>(options: Options<
         ...options.headers
     }
 });
+
+/**
+ * List My Event Types
+ *
+ * All of the Host's Event Types, archived ones included, oldest first.
+ */
+export const listMyEventTypes = <ThrowOnError extends boolean = false>(options?: Options<ListMyEventTypesData, ThrowOnError>): RequestResult<ListMyEventTypesResponses, ListMyEventTypesErrors, ThrowOnError> => (options?.client ?? client).get<ListMyEventTypesResponses, ListMyEventTypesErrors, ThrowOnError>({ url: '/api/me/event-types', ...options });
+
+/**
+ * Create Event Type
+ */
+export const createEventType = <ThrowOnError extends boolean = false>(options: Options<CreateEventTypeData, ThrowOnError>): RequestResult<CreateEventTypeResponses, CreateEventTypeErrors, ThrowOnError> => (options.client ?? client).post<CreateEventTypeResponses, CreateEventTypeErrors, ThrowOnError>({
+    url: '/api/me/event-types',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Update Event Type
+ *
+ * Edit or (un)archive an Event Type. Existing Bookings keep their own start and end.
+ */
+export const updateEventType = <ThrowOnError extends boolean = false>(options: Options<UpdateEventTypeData, ThrowOnError>): RequestResult<UpdateEventTypeResponses, UpdateEventTypeErrors, ThrowOnError> => (options.client ?? client).patch<UpdateEventTypeResponses, UpdateEventTypeErrors, ThrowOnError>({
+    url: '/api/me/event-types/{event_type_id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Get Public Host
+ *
+ * A Host's Public name and the Event Types Guests can book.
+ */
+export const getPublicHost = <ThrowOnError extends boolean = false>(options: Options<GetPublicHostData, ThrowOnError>): RequestResult<GetPublicHostResponses, GetPublicHostErrors, ThrowOnError> => (options.client ?? client).get<GetPublicHostResponses, GetPublicHostErrors, ThrowOnError>({ url: '/api/hosts/{handle}', ...options });

@@ -5,6 +5,72 @@ export type ClientOptions = {
 };
 
 /**
+ * EventTypeCreate
+ */
+export type EventTypeCreate = {
+    /**
+     * Title
+     */
+    title: string;
+    /**
+     * Description
+     */
+    description?: string;
+    /**
+     * Duration Minutes
+     */
+    duration_minutes: number;
+};
+
+/**
+ * EventTypeResponse
+ */
+export type EventTypeResponse = {
+    /**
+     * Id
+     */
+    id: number;
+    /**
+     * Title
+     */
+    title: string;
+    /**
+     * Description
+     */
+    description: string;
+    /**
+     * Duration Minutes
+     */
+    duration_minutes: number;
+    /**
+     * Archived
+     */
+    archived: boolean;
+};
+
+/**
+ * EventTypeUpdate
+ */
+export type EventTypeUpdate = {
+    /**
+     * Title
+     */
+    title?: string | null;
+    /**
+     * Description
+     */
+    description?: string | null;
+    /**
+     * Duration Minutes
+     */
+    duration_minutes?: number | null;
+    /**
+     * Archived
+     */
+    archived?: boolean | null;
+};
+
+/**
  * HTTPValidationError
  */
 export type HttpValidationError = {
@@ -72,6 +138,46 @@ export type LogInRequest = {
      * Password
      */
     password: string;
+};
+
+/**
+ * PublicEventType
+ */
+export type PublicEventType = {
+    /**
+     * Id
+     */
+    id: number;
+    /**
+     * Title
+     */
+    title: string;
+    /**
+     * Description
+     */
+    description: string;
+    /**
+     * Duration Minutes
+     */
+    duration_minutes: number;
+};
+
+/**
+ * PublicHost
+ */
+export type PublicHost = {
+    /**
+     * Public Name
+     */
+    public_name: string;
+    /**
+     * Handle
+     */
+    handle: string;
+    /**
+     * Event Types
+     */
+    event_types: Array<PublicEventType>;
 };
 
 /**
@@ -309,3 +415,123 @@ export type UpdateMeResponses = {
 };
 
 export type UpdateMeResponse = UpdateMeResponses[keyof UpdateMeResponses];
+
+export type ListMyEventTypesData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/me/event-types';
+};
+
+export type ListMyEventTypesErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ListMyEventTypesError = ListMyEventTypesErrors[keyof ListMyEventTypesErrors];
+
+export type ListMyEventTypesResponses = {
+    /**
+     * Response List My Event Types
+     *
+     * Successful Response
+     */
+    200: Array<EventTypeResponse>;
+};
+
+export type ListMyEventTypesResponse = ListMyEventTypesResponses[keyof ListMyEventTypesResponses];
+
+export type CreateEventTypeData = {
+    body: EventTypeCreate;
+    path?: never;
+    query?: never;
+    url: '/api/me/event-types';
+};
+
+export type CreateEventTypeErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CreateEventTypeError = CreateEventTypeErrors[keyof CreateEventTypeErrors];
+
+export type CreateEventTypeResponses = {
+    /**
+     * Successful Response
+     */
+    201: EventTypeResponse;
+};
+
+export type CreateEventTypeResponse = CreateEventTypeResponses[keyof CreateEventTypeResponses];
+
+export type UpdateEventTypeData = {
+    body: EventTypeUpdate;
+    path: {
+        /**
+         * Event Type Id
+         */
+        event_type_id: number;
+    };
+    query?: never;
+    url: '/api/me/event-types/{event_type_id}';
+};
+
+export type UpdateEventTypeErrors = {
+    /**
+     * No such Event Type of this Host
+     */
+    404: unknown;
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UpdateEventTypeError = UpdateEventTypeErrors[keyof UpdateEventTypeErrors];
+
+export type UpdateEventTypeResponses = {
+    /**
+     * Successful Response
+     */
+    200: EventTypeResponse;
+};
+
+export type UpdateEventTypeResponse = UpdateEventTypeResponses[keyof UpdateEventTypeResponses];
+
+export type GetPublicHostData = {
+    body?: never;
+    path: {
+        /**
+         * Handle
+         */
+        handle: string;
+    };
+    query?: never;
+    url: '/api/hosts/{handle}';
+};
+
+export type GetPublicHostErrors = {
+    /**
+     * No Host with this Handle
+     */
+    404: unknown;
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetPublicHostError = GetPublicHostErrors[keyof GetPublicHostErrors];
+
+export type GetPublicHostResponses = {
+    /**
+     * Successful Response
+     */
+    200: PublicHost;
+};
+
+export type GetPublicHostResponse = GetPublicHostResponses[keyof GetPublicHostResponses];
