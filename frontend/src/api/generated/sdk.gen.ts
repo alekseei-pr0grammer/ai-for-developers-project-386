@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { CreateBookingData, CreateBookingErrors, CreateBookingResponses, CreateEventTypeData, CreateEventTypeErrors, CreateEventTypeResponses, GetHealthData, GetHealthResponses, GetMeData, GetMeErrors, GetMeResponses, GetMyScheduleData, GetMyScheduleErrors, GetMyScheduleResponses, GetPublicEventTypeData, GetPublicEventTypeErrors, GetPublicEventTypeResponses, GetPublicHostData, GetPublicHostErrors, GetPublicHostResponses, GetReadinessData, GetReadinessErrors, GetReadinessResponses, ListMyEventTypesData, ListMyEventTypesErrors, ListMyEventTypesResponses, ListSlotsData, ListSlotsErrors, ListSlotsResponses, LogInData, LogInErrors, LogInResponses, LogOutData, LogOutErrors, LogOutResponses, ReplaceMyScheduleData, ReplaceMyScheduleErrors, ReplaceMyScheduleResponses, SignUpData, SignUpErrors, SignUpResponses, UpdateEventTypeData, UpdateEventTypeErrors, UpdateEventTypeResponses, UpdateMeData, UpdateMeErrors, UpdateMeResponses } from './types.gen';
+import type { CancelBookingData, CancelBookingErrors, CancelBookingResponses, CreateBookingData, CreateBookingErrors, CreateBookingResponses, CreateEventTypeData, CreateEventTypeErrors, CreateEventTypeResponses, GetHealthData, GetHealthResponses, GetMeData, GetMeErrors, GetMeResponses, GetMyScheduleData, GetMyScheduleErrors, GetMyScheduleResponses, GetPublicEventTypeData, GetPublicEventTypeErrors, GetPublicEventTypeResponses, GetPublicHostData, GetPublicHostErrors, GetPublicHostResponses, GetReadinessData, GetReadinessErrors, GetReadinessResponses, ListMyBookingsData, ListMyBookingsErrors, ListMyBookingsResponses, ListMyEventTypesData, ListMyEventTypesErrors, ListMyEventTypesResponses, ListSlotsData, ListSlotsErrors, ListSlotsResponses, LogInData, LogInErrors, LogInResponses, LogOutData, LogOutErrors, LogOutResponses, ReplaceMyScheduleData, ReplaceMyScheduleErrors, ReplaceMyScheduleResponses, SignUpData, SignUpErrors, SignUpResponses, UpdateEventTypeData, UpdateEventTypeErrors, UpdateEventTypeResponses, UpdateMeData, UpdateMeErrors, UpdateMeResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -176,3 +176,19 @@ export const createBooking = <ThrowOnError extends boolean = false>(options: Opt
         ...options.headers
     }
 });
+
+/**
+ * List My Bookings
+ *
+ * Upcoming: active and not yet ended, soonest first.
+ * Past: ended or cancelled, most recent first.
+ */
+export const listMyBookings = <ThrowOnError extends boolean = false>(options: Options<ListMyBookingsData, ThrowOnError>): RequestResult<ListMyBookingsResponses, ListMyBookingsErrors, ThrowOnError> => (options.client ?? client).get<ListMyBookingsResponses, ListMyBookingsErrors, ThrowOnError>({ url: '/api/me/bookings', ...options });
+
+/**
+ * Cancel Booking
+ *
+ * Cancel a Booking: it stays in history as cancelled and its time is free again.
+ * Cancelling a cancelled Booking changes nothing.
+ */
+export const cancelBooking = <ThrowOnError extends boolean = false>(options: Options<CancelBookingData, ThrowOnError>): RequestResult<CancelBookingResponses, CancelBookingErrors, ThrowOnError> => (options.client ?? client).post<CancelBookingResponses, CancelBookingErrors, ThrowOnError>({ url: '/api/me/bookings/{booking_id}/cancel', ...options });

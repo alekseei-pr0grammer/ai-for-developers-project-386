@@ -3,6 +3,7 @@ import { Check, Copy } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { logOutMutation } from '@/api/generated/@tanstack/react-query.gen'
+import { BookingsCard } from '@/components/bookings-card'
 import { EventTypesCard } from '@/components/event-types-card'
 import { ProfileCard } from '@/components/profile-card'
 import { ScheduleCard } from '@/components/schedule-card'
@@ -37,6 +38,7 @@ export function DashboardPage() {
         </Button>
       </div>
       <PublicLinkCard handle={host.handle} />
+      <BookingsCard timeZone={host.time_zone} />
       <EventTypesCard />
       <ScheduleCard timeZone={host.time_zone} />
       <ProfileCard host={host} />

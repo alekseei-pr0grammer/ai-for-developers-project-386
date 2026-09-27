@@ -827,6 +827,135 @@
           }
         }
       }
+    },
+    "/api/me/bookings": {
+      "get": {
+        "tags": [
+          "bookings"
+        ],
+        "summary": "List My Bookings",
+        "description": "Upcoming: active and not yet ended, soonest first.\nPast: ended or cancelled, most recent first.",
+        "operationId": "list_my_bookings",
+        "parameters": [
+          {
+            "name": "scope",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "enum": [
+                "upcoming",
+                "past"
+              ],
+              "type": "string",
+              "title": "Scope"
+            }
+          },
+          {
+            "name": "session",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Session"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HostBooking"
+                  },
+                  "title": "Response List My Bookings"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/me/bookings/{booking_id}/cancel": {
+      "post": {
+        "tags": [
+          "bookings"
+        ],
+        "summary": "Cancel Booking",
+        "description": "Cancel a Booking: it stays in history as cancelled and its time is free again.\nCancelling a cancelled Booking changes nothing.",
+        "operationId": "cancel_booking",
+        "parameters": [
+          {
+            "name": "booking_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Booking Id"
+            }
+          },
+          {
+            "name": "session",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Session"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HostBooking"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No such Booking of this Host"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1057,6 +1186,79 @@
           "status"
         ],
         "title": "HealthResponse"
+      },
+      "HostBooking": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "event_type_title": {
+            "type": "string",
+            "title": "Event Type Title"
+          },
+          "start": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Start"
+          },
+          "end": {
+            "type": "string",
+            "format": "date-time",
+            "title": "End"
+          },
+          "guest_name": {
+            "type": "string",
+            "title": "Guest Name"
+          },
+          "guest_email": {
+            "type": "string",
+            "title": "Guest Email"
+          },
+          "guest_note": {
+            "type": "string",
+            "title": "Guest Note"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "cancelled"
+            ],
+            "title": "Status"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "cancelled_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cancelled At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "event_type_title",
+          "start",
+          "end",
+          "guest_name",
+          "guest_email",
+          "guest_note",
+          "status",
+          "created_at",
+          "cancelled_at"
+        ],
+        "title": "HostBooking"
       },
       "HostResponse": {
         "properties": {

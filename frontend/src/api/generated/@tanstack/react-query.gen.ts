@@ -3,8 +3,8 @@
 import { type DefaultError, queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { createBooking, createEventType, getHealth, getMe, getMySchedule, getPublicEventType, getPublicHost, getReadiness, listMyEventTypes, listSlots, logIn, logOut, type Options, replaceMySchedule, signUp, updateEventType, updateMe } from '../sdk.gen';
-import type { CreateBookingData, CreateBookingError, CreateBookingResponse, CreateEventTypeData, CreateEventTypeError, CreateEventTypeResponse, GetHealthData, GetHealthResponse, GetMeData, GetMeError, GetMeResponse, GetMyScheduleData, GetMyScheduleError, GetMyScheduleResponse, GetPublicEventTypeData, GetPublicEventTypeError, GetPublicEventTypeResponse, GetPublicHostData, GetPublicHostError, GetPublicHostResponse, GetReadinessData, GetReadinessResponse, ListMyEventTypesData, ListMyEventTypesError, ListMyEventTypesResponse, ListSlotsData, ListSlotsError, ListSlotsResponse, LogInData, LogInError, LogInResponse, LogOutData, LogOutError, LogOutResponse, ReplaceMyScheduleData, ReplaceMyScheduleError, ReplaceMyScheduleResponse, SignUpData, SignUpError, SignUpResponse, UpdateEventTypeData, UpdateEventTypeError, UpdateEventTypeResponse, UpdateMeData, UpdateMeError, UpdateMeResponse } from '../types.gen';
+import { cancelBooking, createBooking, createEventType, getHealth, getMe, getMySchedule, getPublicEventType, getPublicHost, getReadiness, listMyBookings, listMyEventTypes, listSlots, logIn, logOut, type Options, replaceMySchedule, signUp, updateEventType, updateMe } from '../sdk.gen';
+import type { CancelBookingData, CancelBookingError, CancelBookingResponse, CreateBookingData, CreateBookingError, CreateBookingResponse, CreateEventTypeData, CreateEventTypeError, CreateEventTypeResponse, GetHealthData, GetHealthResponse, GetMeData, GetMeError, GetMeResponse, GetMyScheduleData, GetMyScheduleError, GetMyScheduleResponse, GetPublicEventTypeData, GetPublicEventTypeError, GetPublicEventTypeResponse, GetPublicHostData, GetPublicHostError, GetPublicHostResponse, GetReadinessData, GetReadinessResponse, ListMyBookingsData, ListMyBookingsError, ListMyBookingsResponse, ListMyEventTypesData, ListMyEventTypesError, ListMyEventTypesResponse, ListSlotsData, ListSlotsError, ListSlotsResponse, LogInData, LogInError, LogInResponse, LogOutData, LogOutError, LogOutResponse, ReplaceMyScheduleData, ReplaceMyScheduleError, ReplaceMyScheduleResponse, SignUpData, SignUpError, SignUpResponse, UpdateEventTypeData, UpdateEventTypeError, UpdateEventTypeResponse, UpdateMeData, UpdateMeError, UpdateMeResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -339,6 +339,47 @@ export const createBookingMutation = (options?: Partial<Options<CreateBookingDat
     const mutationOptions: UseMutationOptions<CreateBookingResponse, CreateBookingError, Options<CreateBookingData>> = {
         mutationFn: async (fnOptions) => {
             const { data } = await createBooking({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const listMyBookingsQueryKey = (options: Options<ListMyBookingsData>) => createQueryKey('listMyBookings', options);
+
+/**
+ * List My Bookings
+ *
+ * Upcoming: active and not yet ended, soonest first.
+ * Past: ended or cancelled, most recent first.
+ */
+export const listMyBookingsOptions = (options: Options<ListMyBookingsData>) => queryOptions<ListMyBookingsResponse, ListMyBookingsError, ListMyBookingsResponse, ReturnType<typeof listMyBookingsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listMyBookings({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listMyBookingsQueryKey(options)
+});
+
+/**
+ * Cancel Booking
+ *
+ * Cancel a Booking: it stays in history as cancelled and its time is free again.
+ * Cancelling a cancelled Booking changes nothing.
+ */
+export const cancelBookingMutation = (options?: Partial<Options<CancelBookingData>>): UseMutationOptions<CancelBookingResponse, CancelBookingError, Options<CancelBookingData>> => {
+    const mutationOptions: UseMutationOptions<CancelBookingResponse, CancelBookingError, Options<CancelBookingData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await cancelBooking({
                 ...options,
                 ...fnOptions,
                 throwOnError: true

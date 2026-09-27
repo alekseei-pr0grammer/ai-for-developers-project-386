@@ -151,6 +151,52 @@ export type HealthResponse = {
 };
 
 /**
+ * HostBooking
+ */
+export type HostBooking = {
+    /**
+     * Id
+     */
+    id: number;
+    /**
+     * Event Type Title
+     */
+    event_type_title: string;
+    /**
+     * Start
+     */
+    start: string;
+    /**
+     * End
+     */
+    end: string;
+    /**
+     * Guest Name
+     */
+    guest_name: string;
+    /**
+     * Guest Email
+     */
+    guest_email: string;
+    /**
+     * Guest Note
+     */
+    guest_note: string;
+    /**
+     * Status
+     */
+    status: 'active' | 'cancelled';
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Cancelled At
+     */
+    cancelled_at: string | null;
+};
+
+/**
  * HostResponse
  */
 export type HostResponse = {
@@ -840,3 +886,69 @@ export type CreateBookingResponses = {
 };
 
 export type CreateBookingResponse = CreateBookingResponses[keyof CreateBookingResponses];
+
+export type ListMyBookingsData = {
+    body?: never;
+    path?: never;
+    query: {
+        /**
+         * Scope
+         */
+        scope: 'upcoming' | 'past';
+    };
+    url: '/api/me/bookings';
+};
+
+export type ListMyBookingsErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ListMyBookingsError = ListMyBookingsErrors[keyof ListMyBookingsErrors];
+
+export type ListMyBookingsResponses = {
+    /**
+     * Response List My Bookings
+     *
+     * Successful Response
+     */
+    200: Array<HostBooking>;
+};
+
+export type ListMyBookingsResponse = ListMyBookingsResponses[keyof ListMyBookingsResponses];
+
+export type CancelBookingData = {
+    body?: never;
+    path: {
+        /**
+         * Booking Id
+         */
+        booking_id: number;
+    };
+    query?: never;
+    url: '/api/me/bookings/{booking_id}/cancel';
+};
+
+export type CancelBookingErrors = {
+    /**
+     * No such Booking of this Host
+     */
+    404: unknown;
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CancelBookingError = CancelBookingErrors[keyof CancelBookingErrors];
+
+export type CancelBookingResponses = {
+    /**
+     * Successful Response
+     */
+    200: HostBooking;
+};
+
+export type CancelBookingResponse = CancelBookingResponses[keyof CancelBookingResponses];
