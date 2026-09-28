@@ -1,5 +1,5 @@
 # Common commands. Run `make help` to list them.
-.PHONY: help install db dev-api dev-web api-client lint test build up down
+.PHONY: help install db dev-api dev-web api-client lint test build up down image-check
 
 help: ## Show available commands
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*## "}; {printf "  %-12s %s\n", $$1, $$2}'
@@ -28,8 +28,19 @@ lint: ## Lint and type-check everything
 test: db ## Run tests (against the calendar_test database on the local Postgres)
 	cd backend && uv run pytest
 
-build: ## Build production Docker images
+build: ## Build the production Docker image
 	docker compose build
+
+image-check: ## Run the image like Hexlet's check (only PORT, no database) and expect GET / = 200
+	docker build -t calendar-app:check .
+	docker rm -f calendar-app-check >/dev/null 2>&1 || true
+	docker run -d --name calendar-app-check -e PORT=8080 -p 8081:8080 calendar-app:check >/dev/null
+	@for i in $$(seq 1 30); do \
+		status=$$(curl -s -o /dev/null -w '%{http_code}' http://localhost:8081/ || true); \
+		[ "$$status" = 200 ] && break; sleep 1; \
+	done; \
+	docker rm -f calendar-app-check >/dev/null; \
+	if [ "$$status" = 200 ]; then echo "GET / -> 200"; else echo "GET / -> $$status" >&2; exit 1; fi
 
 up: ## Run the full stack in Docker on http://localhost:8080
 	docker compose up --build

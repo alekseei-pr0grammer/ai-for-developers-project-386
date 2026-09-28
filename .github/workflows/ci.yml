@@ -81,7 +81,7 @@ jobs:
       - run: make api-client
       - run: git diff --exit-code -- frontend/openapi.json frontend/src/api/generated
 
-  # Builds the production images and checks the whole stack actually starts.
+  # Builds the production image and checks the whole stack actually starts.
   docker:
     needs: [backend, frontend, api-contract]
     runs-on: ubuntu-latest
@@ -90,5 +90,9 @@ jobs:
       - run: docker compose up --build --wait
       - run: curl --fail --silent http://localhost:8080/api/health/ready
       - run: curl --fail --silent http://localhost:8080/ | grep -q '<div id="root">'
+      # A client-side route (a Host's public page) gets the app page too.
+      - run: curl --fail --silent http://localhost:8080/some-handle | grep -q '<div id="root">'
       - if: failure()
         run: docker compose logs
+      # The same image the way Hexlet's check runs it: only PORT, no database.
+      - run: make image-check

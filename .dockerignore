@@ -1,0 +1,14 @@
+# Only what the root Dockerfile copies: frontend/ and backend/ sources.
+.git
+.github
+**/node_modules
+**/dist
+**/.venv
+**/__pycache__
+**/*.py[cod]
+**/.pytest_cache
+**/.ruff_cache
+**/.env
+**/*.local
+backend/tests
+docs

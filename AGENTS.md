@@ -6,7 +6,7 @@
 Booking calendar service (like cal.com). Hexlet learning project.
 
 ```
-React (Vite) + shadcn/ui + Tailwind  →  static files (nginx in Docker, or a CDN)
+React (Vite) + shadcn/ui + Tailwind  →  static files, served by FastAPI in the Docker image
         │  JSON over /api, typed client generated from OpenAPI
         ▼
 FastAPI  →  Postgres
@@ -14,7 +14,7 @@ FastAPI  →  Postgres
 
 ## Layout
 - `backend/`: FastAPI app (Python 3.14, managed by `uv`)
-  - `app/main.py`: app and router wiring. All routes live under `/api`.
+  - `app/main.py`: app and router wiring. All API routes live under `/api`; with `FRONTEND_DIST` set, every other path serves the built frontend (`app/frontend.py`).
   - `app/api/`: one router module per resource
   - `app/models/`: SQLAlchemy models. Import each one in `app/models/__init__.py`.
   - `app/config.py`: settings from env vars (`DATABASE_URL`, `CORS_ORIGINS`)
@@ -24,7 +24,8 @@ FastAPI  →  Postgres
   - `src/api/generated/`: **generated** API client. Never edit by hand.
   - `src/api/client-config.ts`: API base URL (`VITE_API_BASE_URL`, empty = same origin)
   - `openapi.json`: API contract snapshot exported from the backend
-- `compose.yaml`: full stack locally (db → migrate → api → web)
+- `Dockerfile`: the one production image (frontend build + API). Starts on `$PORT`, migrates first when `DATABASE_URL` is set. Hexlet's check runs it with only `PORT=8080`.
+- `compose.yaml`: full stack locally (db → app, on the same image)
 - `.github/workflows/hexlet-check.yml`: Hexlet's workflow. **Never edit, rename or delete it.**
 - `.github/workflows/ci.yml`: our CI, runs on every push to any branch
 - `.github/workflows/release-please.yml`: on push to `main`, opens or updates the release PR
@@ -46,7 +47,7 @@ FastAPI  →  Postgres
 - **Config:** use env vars via `app/config.py`. No secrets in code. `VITE_*` vars are public and baked in at build time.
 - **Tests:** every new endpoint gets a pytest test in `backend/tests/`.
 - **Dependencies:** add with `uv add` / `npm install`. Commit the lock files.
-- **CI:** besides `make lint` and `make test`, it checks that `make api-client` output is committed and that `docker compose up --wait` starts healthy, so run those too when you touch the API or Docker files. A red CI run means a real problem: fix the cause, never skip or weaken a check. Debug with `gh run list` and `gh run view <id> --log-failed`. When adding a check, add it to both the `Makefile` and `ci.yml`.
+- **CI:** besides `make lint` and `make test`, it checks that `make api-client` output is committed and that `docker compose up --wait` starts healthy and `make image-check` (the image with only `PORT`, like Hexlet's check) passes, so run those too when you touch the API or Docker files. A red CI run means a real problem: fix the cause, never skip or weaken a check. Debug with `gh run list` and `gh run view <id> --log-failed`. When adding a check, add it to both the `Makefile` and `ci.yml`.
 - **Releases:** release-please owns versions and `CHANGELOG.md`. Never bump a version or edit the changelog by hand. The version lives in `.release-please-manifest.json` and is copied to every file listed under `extra-files` in `release-please-config.json`; if you add a new place that holds the app version, add it there. `feat` → minor, `fix` → patch (while < 1.0).
 - **Commits:** use [Conventional Commits](https://www.conventionalcommits.org/): `type(scope): summary`, e.g. `feat(api): add bookings endpoint`, `fix(web): ...`. Types: `feat`, `fix`, `docs`, `refactor`, `test`, `ci`, `build`, `chore`. Scopes: `api`, `web`, `db`, `docker`.
 

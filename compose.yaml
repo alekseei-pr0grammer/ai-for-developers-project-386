@@ -1,4 +1,4 @@
-# Full stack locally, same images as production:  docker compose up --build
+# Full stack locally, with the same image as production:  docker compose up --build
 # Open http://localhost:8080
 services:
   db:
@@ -17,43 +17,26 @@ services:
       timeout: 3s
       retries: 20
 
-  # One-off job: apply DB migrations, then exit. The API starts only after it succeeds.
-  migrate:
-    build: ./backend
-    image: calendar-api
-    command: ["alembic", "upgrade", "head"]
+  # The app image from the root Dockerfile: migrates the database on start,
+  # then serves the API and the frontend on $PORT.
+  app:
+    build: .
+    image: calendar-app
     environment:
+      PORT: "8080"
       DATABASE_URL: postgresql+psycopg://calendar:calendar@db:5432/calendar
-    depends_on:
-      db:
-        condition: service_healthy
-
-  api:
-    build: ./backend
-    image: calendar-api
-    environment:
-      DATABASE_URL: postgresql+psycopg://calendar:calendar@db:5432/calendar
-      # The local stack is plain HTTP on :8080; production (HTTPS) keeps the default (true).
+      # The local stack is plain HTTP; production (HTTPS) keeps the default (true).
       SESSION_COOKIE_SECURE: "false"
-    ports:
-      - "8000:8000"
-    depends_on:
-      migrate:
-        condition: service_completed_successfully
-    healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')"]
-      interval: 5s
-      timeout: 3s
-      retries: 10
-
-  web:
-    build: ./frontend
-    image: calendar-web
     ports:
       - "8080:8080"
     depends_on:
-      api:
+      db:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8080/api/health/ready')"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
 
 volumes:
   db-data:
