@@ -1059,8 +1059,8 @@
           },
           "duration_minutes": {
             "type": "integer",
-            "maximum": 720.0,
-            "exclusiveMinimum": 0.0,
+            "maximum": 720,
+            "exclusiveMinimum": 0,
             "title": "Duration Minutes"
           }
         },
@@ -1135,8 +1135,8 @@
             "anyOf": [
               {
                 "type": "integer",
-                "maximum": 720.0,
-                "exclusiveMinimum": 0.0
+                "maximum": 720,
+                "exclusiveMinimum": 0
               },
               {
                 "type": "null"
@@ -1449,8 +1449,8 @@
         "properties": {
           "weekday": {
             "type": "integer",
-            "maximum": 6.0,
-            "minimum": 0.0,
+            "maximum": 6,
+            "minimum": 0,
             "title": "Weekday",
             "description": "0 = Monday ... 6 = Sunday"
           },
