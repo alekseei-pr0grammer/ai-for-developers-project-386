@@ -3,6 +3,10 @@
 
 [![hexlet-check](https://github.com/alekseei-pr0grammer/ai-for-developers-project-386/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/alekseei-pr0grammer/ai-for-developers-project-386/actions)
 
+**Демо:** https://calendar-tcag.onrender.com
+
+Приложение работает на бесплатном тарифе Render: после 15 минут без запросов оно засыпает, и первая загрузка может занять до минуты.
+
 Разработайте совместно с ИИ сервис для бронирования календаря
 
 Учебный проект Хекслета: https://ru.hexlet.io/programs/ai-for-developers
