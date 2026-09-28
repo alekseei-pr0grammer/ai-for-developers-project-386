@@ -1,0 +1,30 @@
+# Render Blueprint: the production app and its database.
+# Applied once in the Render dashboard (New → Blueprint, pick this repository);
+# after that Render keeps the services in sync with this file.
+services:
+  - type: web
+    name: calendar
+    runtime: docker
+    # The root Dockerfile: the whole app, serving on $PORT (set by Render).
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    region: frankfurt
+    plan: free
+    branch: main
+    # Deploy a push to main only after its GitHub checks (CI) pass.
+    autoDeployTrigger: checksPass
+    # Ready = the app answers and its database is reachable.
+    healthCheckPath: /api/health/ready
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: calendar-db
+          property: connectionString
+
+databases:
+  # Free plan: expires 30 days after creation (see the deployment spec, #12).
+  - name: calendar-db
+    region: frankfurt
+    plan: free
+    databaseName: calendar
+    user: calendar

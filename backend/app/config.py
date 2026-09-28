@@ -23,6 +23,16 @@ class Settings(BaseSettings):
     # Unset in development, where Vite's dev server serves the frontend.
     frontend_dist: Path | None = None
 
+    @field_validator("database_url")
+    @classmethod
+    def use_psycopg_driver(cls, value: str) -> str:
+        # Hosts such as Render hand out postgresql:// (or postgres://) URLs, which
+        # SQLAlchemy would open with psycopg2; we install psycopg (v3).
+        for scheme in ("postgresql://", "postgres://"):
+            if value.startswith(scheme):
+                return "postgresql+psycopg://" + value.removeprefix(scheme)
+        return value
+
     @field_validator("cors_origins", mode="before")
     @classmethod
     def split_origins(cls, value: object) -> object:
