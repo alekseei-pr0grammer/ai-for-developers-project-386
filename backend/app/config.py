@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Annotated
 
 from pydantic import field_validator
@@ -18,6 +19,9 @@ class Settings(BaseSettings):
     session_lifetime_days: int = 30
     # Guests can book this many days ahead, counting today, in the Host's time zone.
     booking_window_days: int = 14
+    # The built frontend (Vite's dist/) to serve next to the API, as in the Docker image.
+    # Unset in development, where Vite's dev server serves the frontend.
+    frontend_dist: Path | None = None
 
     @field_validator("cors_origins", mode="before")
     @classmethod
